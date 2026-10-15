@@ -1,6 +1,10 @@
 {{- if and (eq (printf "%v" .Values.ingress.enabled) "true") .Values.ingress.hosts }}
 {{- $serviceName := include "app-mendix.fullname" . -}}
 {{- $servicePort := .Values.service.externalPort -}}
+{{- if .Values.httpAutoscale.enabled }}
+{{- $serviceName = printf "%s-interceptor" $serviceName -}}
+{{- $servicePort = 8080 -}}
+{{- end }}
 {{- $className := .Values.ingress.ingressClassName -}}
 {{- $globalAnnotations := .Values.ingress.annotations | default dict -}}
 {{- range $host := .Values.ingress.hosts }}

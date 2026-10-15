@@ -1,4 +1,4 @@
-{{- if .Values.autoscale.enabled -}}
+{{- if and .Values.autoscale.enabled (not .Values.httpAutoscale.enabled) -}}
 {{- $serviceName := include "app-mendix.fullname" . -}}
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler

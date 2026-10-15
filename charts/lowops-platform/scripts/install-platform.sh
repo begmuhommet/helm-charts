@@ -244,7 +244,9 @@ function haproxy() {
 
 function install_metallb() {
     local start_network="172.18.255.200"
-    local end_network="172.18.255.250"
+    local prefix="${start_network%.*}"
+    local public_range="${prefix}.200-${prefix}.219"
+    local private_range="${prefix}.220-${prefix}.250"
 
     echo ">>> Installing metallb"
     helm repo add "bitnami" "https://charts.bitnami.com/bitnami"
@@ -254,7 +256,11 @@ function install_metallb() {
         --version 3.0.12 \
         --set "configInline.address-pools[0].name=default" \
         --set "configInline.address-pools[0].protocol=layer2" \
-        --set "configInline.address-pools[0].addresses[0]=${start_network}-${end_network}" \
+        --set "configInline.address-pools[0].addresses[0]=${public_range}" \
+        --set "configInline.address-pools[1].name=private" \
+        --set "configInline.address-pools[1].protocol=layer2" \
+        --set "configInline.address-pools[1].auto-assign=false" \
+        --set "configInline.address-pools[1].addresses[0]=${private_range}" \
         --set "speaker.secretValue=stronk-key" \
         --kubeconfig "${KUBECONFIG}"
     

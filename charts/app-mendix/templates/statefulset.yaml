@@ -6,7 +6,9 @@ metadata:
   labels:
     {{- include "app-mendix.labels" . | nindent 4 }}
 spec:
-  replicas: {{ default 1 .Values.replicaCount }}
+{{- if not .Values.httpAutoscale.enabled }}
+  replicas: {{ .Values.replicaCount | default 1 }}
+{{- end }}
   selector:
     matchLabels:
       {{- include "app-mendix.selectorLabels" . | nindent 6 }}

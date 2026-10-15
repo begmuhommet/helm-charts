@@ -32,6 +32,19 @@ spec:
     ports:
     - protocol: TCP
       port: {{ .Values.service.internalPort }}
+  {{- if .Values.httpAutoscale.enabled }}
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ .Values.httpAutoscale.interceptorNamespace }}
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: http-add-on
+          app.kubernetes.io/component: interceptor
+    ports:
+    - protocol: TCP
+      port: {{ .Values.service.internalPort }}
+  {{- end }}
   {{- end }}
 
   egress:

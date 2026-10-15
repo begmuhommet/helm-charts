@@ -1,0 +1,59 @@
+{{- if .Values.httpAutoscale.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "app-mendix.fullname" . }}-interceptor
+  labels:
+    {{- include "app-mendix.labels" . | nindent 4 }}
+spec:
+  type: ExternalName
+  externalName: keda-add-ons-http-interceptor-proxy.{{ .Values.httpAutoscale.interceptorNamespace }}.svc.cluster.local
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+---
+apiVersion: http.keda.sh/v1beta1
+kind: InterceptorRoute
+metadata:
+  name: {{ include "app-mendix.fullname" . }}
+  labels:
+    {{- include "app-mendix.labels" . | nindent 4 }}
+spec:
+  target:
+    service: {{ include "app-mendix.fullname" . }}
+    port: {{ .Values.service.externalPort }}
+  rules:
+    {{- range .Values.ingress.hosts }}
+    - hosts:
+        - {{ .host | quote }}
+      paths:
+        - value: {{ .path | default "/" | quote }}
+    {{- end }}
+  scalingMetric:
+    concurrency:
+      targetValue: {{ .Values.httpAutoscale.targetConcurrency }}
+  timeouts:
+    readiness: {{ .Values.httpAutoscale.readinessTimeout }}
+    request: {{ .Values.httpAutoscale.requestTimeout }}
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ include "app-mendix.fullname" . }}
+  labels:
+    {{- include "app-mendix.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: {{ include "app-mendix.fullname" . }}
+  minReplicaCount: 0
+  maxReplicaCount: {{ max 1 (.Values.replicaCount | default 1 | int) }}
+  cooldownPeriod: {{ .Values.httpAutoscale.cooldownPeriod }}
+  triggers:
+    - type: external-push
+      metadata:
+        scalerAddress: keda-add-ons-http-external-scaler.{{ .Values.httpAutoscale.interceptorNamespace }}:9090
+        interceptorRoute: {{ include "app-mendix.fullname" . }}
+{{- end }}

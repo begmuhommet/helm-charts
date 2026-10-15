@@ -176,6 +176,14 @@ autoscale:
   maxSlaveReplicas: 3
   targetCPUUtilizationPercentage: 70
 
+httpAutoscale:
+  enabled: false
+  cooldownPeriod: 300
+  readinessTimeout: 300s
+  requestTimeout: 300s
+  targetConcurrency: 100
+  interceptorNamespace: lowops-devops
+
 # available from kubernetes 1.20+
 # max 3 hours
 startupProbe:
