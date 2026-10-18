@@ -25,7 +25,7 @@ All charts must have complete metadata:
 
 ```yaml
 apiVersion: v2
-name: app-generic
+name: app
 description: A clear, concise description of what this chart does
 type: application
 version: 0.1.0
@@ -70,9 +70,9 @@ Every chart must include:
 
 ## Naming Conventions
 
-- Chart names: lowercase, hyphen-separated (e.g., `app-generic`)
+- Chart names: lowercase, hyphen-separated (e.g., `app`)
 - Template files: lowercase, descriptive (e.g., `networkpolicy.yaml`)
-- Helper templates: prefix with chart name (e.g., `app-generic.fullname`)
+- Helper templates: prefix with chart name (e.g., `app.fullname`)
 - Release names: will be provided by users, no assumptions
 
 ## Chart Dependencies

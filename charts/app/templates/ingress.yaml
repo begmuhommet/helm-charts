@@ -1,5 +1,5 @@
 {{- if and (eq (printf "%v" .Values.ingress.enabled) "true") .Values.ingress.hosts }}
-{{- $serviceName := include "app-mendix.fullname" . -}}
+{{- $serviceName := include "app.fullname" . -}}
 {{- $servicePort := .Values.service.externalPort -}}
 {{- $className := .Values.ingress.ingressClassName -}}
 {{- $globalAnnotations := .Values.ingress.annotations | default dict -}}
@@ -10,7 +10,7 @@ kind: Ingress
 metadata:
   name: {{ printf "%s-%s" $.Release.Name (required "ingress.hosts[].id is required" $host.id | toString | lower) }}
   labels:
-    {{- include "app-mendix.labels" $ | nindent 4 }}
+    {{- include "app.labels" $ | nindent 4 }}
   {{- $annotations := mustMergeOverwrite (deepCopy $globalAnnotations) ($host.annotations | default dict) }}
   {{- if $annotations }}
   annotations:

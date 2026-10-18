@@ -7,10 +7,7 @@ alwaysApply: true
 
 ## Chart Naming
 
-Charts follow the `app-{type}` pattern:
-- `app-generic` - Generic containerized applications
-- `app-mendix` - Mendix low-code applications
-- `app-nextjs` - Next.js applications
+The shared application chart is `app` (`cinaq/app`). App type is a deploy value, not a separate chart.
 
 Platform charts use descriptive names:
 - `lowops-platform` - Platform installer
@@ -58,27 +55,6 @@ For cert-manager integration:
 ```yaml
 annotations:
   cert-manager.io/cluster-issuer: "lowops-cert-issuer"
-```
-
-## OpenShift Support
-
-App charts support OpenShift routes:
-
-```yaml
-# values.yaml
-route:
-  enabled: false  # Enable for OpenShift
-  host: app.example.com
-  annotations: {}
-  tls:
-    enabled: false
-
-# Template
-{{- if .Values.route.enabled }}
-apiVersion: route.openshift.io/v1
-kind: Route
-...
-{{- end }}
 ```
 
 ## Resource Management

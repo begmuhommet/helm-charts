@@ -14,6 +14,6 @@ Update Complete. ⎈Happy Helming!⎈
 
 $ helm search repo cinaq
 NAME                    CHART VERSION   APP VERSION     DESCRIPTION
-cinaq/app-mendix        1.0.0                           Mendix Application Chart
+cinaq/app               0.5.0           1.0.0           A Helm chart for deploying applications on the low-ops platform
 
 ```
